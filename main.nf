@@ -50,7 +50,7 @@ process RUN_GAPSEQ {
 	cpus = { 1 * task.attempt }
 	memory = '8.GB'
 	time = { 4.h * task.attempt }
-	errorStrategy {  task.exitStatus in [143,137,104,134,139] ? 'retry' : 'finish' }
+	errorStrategy {  task.exitStatus in [143,137,104,134,139,255] ? 'retry' : 'finish' }
 	maxRetries = 2
 	maxForks 30
 
@@ -76,7 +76,7 @@ process PREDICT_GENES {
     cpus = 1
     memory = '6.GB'
     time = { 4.h * task.attempt }
-	errorStrategy {  task.exitStatus in [143,137,104,134,139] ? 'retry' : 'finish' }
+	errorStrategy {  task.exitStatus in [143,137,104,134,139,255] ? 'retry' : 'finish' }
 	maxRetries = 2
 	maxForks 30
 
@@ -105,6 +105,8 @@ process RUN_CARVEME {
     publishDir "${params.outdir}/carveme", mode: 'copy'
     cpus = 2
     memory = '6.GB'
+    errorStrategy {  task.exitStatus in [143,137,104,134,139,255] ? 'retry' : 'finish' }
+    maxRetries = 2
     time = { 4.h * task.attempt }
 	maxForks 10
 
