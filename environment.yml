@@ -1,0 +1,7 @@
+name: nf_gems
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - gapseq=1.2

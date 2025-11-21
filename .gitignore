@@ -1,0 +1,35 @@
+# Nextflow work directory
+work/
+
+# Nextflow output
+results/
+.nextflow*
+.nextflow.log*
+
+# Reports
+*.html
+timeline.html
+report.html
+trace.txt
+dag.dot
+dag.svg
+
+# Conda environments
+conda/
+
+# Test data
+test_data/
+*.fasta
+*.fa
+*.gem
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
