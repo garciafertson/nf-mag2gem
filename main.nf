@@ -47,9 +47,9 @@ if (!params.genome) {
 process RUN_GAPSEQ {
 	container 'quay.io/biocontainers/gapseq:1.4.0--h9ee0642_1'
     publishDir "${params.outdir}/gapseq", mode: 'copy'
-	cpus = { Math.min(1, params.max_cpus) * task.attempt }
-	memory = { Math.min(8.GB, params.max_memory) }
-	time = { Math.min(4.h, params.max_time) * task.attempt }
+	cpus = { 1 * task.attempt }
+	memory = '8.GB'
+	time = { 4.h * task.attempt }
 	errorStrategy {  task.exitStatus in [143,137,104,134,139] ? 'retry' : 'finish' }
 	maxRetries = 2
 	maxForks 30
@@ -71,11 +71,11 @@ process RUN_GAPSEQ {
 /*
  * Process: Predict genes with Prodigal
  */
-process PREDICT_GENES {
+process PREDICT_GENES { 
     container 'quay.io/biocontainers/prodigal:2.6.3--h031d066_9'
     cpus = 1
     memory = '6.GB'
-    time  { '4.h' * task.attempt }
+    time = { 4.h * task.attempt }
 	errorStrategy {  task.exitStatus in [143,137,104,134,139] ? 'retry' : 'finish' }
 	maxRetries = 2
 	maxForks 30
@@ -103,9 +103,9 @@ process PREDICT_GENES {
 process RUN_CARVEME {
     container 'docker://ryanboobybiome/carveme:latest'
     publishDir "${params.outdir}/carveme", mode: 'copy'
-    cpus = { Math.min(2, params.max_cpus) }
-    memory = { Math.min(6.GB, params.max_memory) }
-    time = { Math.min(4.h, params.max_time) }
+    cpus = 2
+    memory = '6.GB'
+    time = { 4.h * task.attempt }
 	maxForks 10
 
     input:
