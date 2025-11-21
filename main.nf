@@ -45,7 +45,7 @@ if (!params.genome) {
  * Process: Run gapseq on each genome
  */
 process RUN_GAPSEQ {
-	singularity 'quay.io/biocontainers/gapseq:1.4.0--h9ee0642_1'
+	container 'quay.io/biocontainers/gapseq:1.4.0--h9ee0642_1'
     publishDir "${params.outdir}/gapseq", mode: 'copy'
 	cpus = { Math.min(1, params.max_cpus) * task.attempt }
 	memory = { Math.min(8.GB, params.max_memory) }
@@ -72,7 +72,7 @@ process RUN_GAPSEQ {
  * Process: Predict genes with Prodigal
  */
 process PREDICT_GENES {
-    singularity 'quay.io/biocontainers/prodigal:2.6.3--h031d066_9'
+    container 'quay.io/biocontainers/prodigal:2.6.3--h031d066_9'
     cpus = 1
     memory = '6.GB'
     time  { '4.h' * task.attempt }
@@ -101,7 +101,7 @@ process PREDICT_GENES {
  * Process: Run CarveMe to build GEMs
  */
 process RUN_CARVEME {
-    singularity 'docker://ryanboobybiome/carveme:latest'
+    container 'docker://ryanboobybiome/carveme:latest'
     publishDir "${params.outdir}/carveme", mode: 'copy'
     cpus = { Math.min(2, params.max_cpus) }
     memory = { Math.min(6.GB, params.max_memory) }
@@ -118,8 +118,7 @@ process RUN_CARVEME {
     def basename = proteins.getBaseName()
     """
     carve ${proteins} \
-        -o ${basename}.xml \
-        --fbc2
+        -o ${basename}.xml 
     """
 }
 
