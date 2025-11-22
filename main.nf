@@ -135,17 +135,17 @@ workflow {
     RUN_GAPSEQ(mags_ch)
     
     // Run CarveMe workflow: predict genes then build GEMs
-    PREDICT_GENES(mags_ch)
-    RUN_CARVEME(PREDICT_GENES.out.proteins)
+    //PREDICT_GENES(mags_ch)
+    //RUN_CARVEME(PREDICT_GENES.out.proteins)
     
     // Log completion
     RUN_GAPSEQ.out.gapseq_results.flatten().view { result ->
         log.info "Gapseq output: ${result}"
     }
     
-    RUN_CARVEME.out.gem_models.view { model ->
-        log.info "CarveMe GEM model: ${model}"
-    }
+    //RUN_CARVEME.out.gem_models.view { model ->
+    //    log.info "CarveMe GEM model: ${model}"
+    //}
 }
 
 workflow.onComplete {
