@@ -101,7 +101,7 @@ process PREDICT_GENES {
  * Process: Run CarveMe to build GEMs
  */
 process RUN_CARVEME {
-    container 'docker://ryanboobybiome/carveme:latest'
+    container 'quay.io/biocontainers/carveme:1.6.6--pyhdfd78af_1'
     publishDir "${params.outdir}/carveme", mode: 'copy'
     cpus = 2
     memory = '6.GB'
@@ -129,23 +129,23 @@ process RUN_CARVEME {
  */
 workflow {
     // Create channel from genome file(s)
-    mags_ch = Channel.fromPath(params.genome, checkIfExists: true)
+    mags_ch = Channel.fromPath(params.genome)
     
     // Run gapseq on each genome
     RUN_GAPSEQ(mags_ch)
     
     // Run CarveMe workflow: predict genes then build GEMs
-    //PREDICT_GENES(mags_ch)
-    //RUN_CARVEME(PREDICT_GENES.out.proteins)
+    PREDICT_GENES(mags_ch)
+    RUN_CARVEME(PREDICT_GENES.out.proteins)
     
     // Log completion
     RUN_GAPSEQ.out.gapseq_results.flatten().view { result ->
         log.info "Gapseq output: ${result}"
     }
     
-    //RUN_CARVEME.out.gem_models.view { model ->
-    //    log.info "CarveMe GEM model: ${model}"
-    //}
+    RUN_CARVEME.out.gem_models.view { model ->
+        log.info "CarveMe GEM model: ${model}"
+    }
 }
 
 workflow.onComplete {
