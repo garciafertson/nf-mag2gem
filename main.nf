@@ -47,9 +47,9 @@ if (!params.genome) {
 process RUN_GAPSEQ {
 	container 'quay.io/biocontainers/gapseq:1.4.0--h9ee0642_1'
     publishDir "${params.outdir}/gapseq", mode: 'copy'
-	cpus = { 1 * task.attempt }
+	cpus = { 2 * task.attempt }
 	memory = '8.GB'
-	time = { 4.h * task.attempt }
+	time = { 5.h * task.attempt }
 	errorStrategy {  task.exitStatus in [143,137,104,134,139,255] ? 'retry' : 'finish' }
 	maxRetries = 2
 	maxForks 30
@@ -103,7 +103,7 @@ process PREDICT_GENES {
 process RUN_CARVEME {
     container 'quay.io/biocontainers/carveme:1.6.6--pyhdfd78af_1'
     publishDir "${params.outdir}/carveme", mode: 'copy'
-    cpus = 2
+    cpus = 1
     memory = '6.GB'
     errorStrategy {  task.exitStatus in [143,137,104,134,139,255] ? 'retry' : 'finish' }
     maxRetries = 2
@@ -124,6 +124,11 @@ process RUN_CARVEME {
     """
 }
 
+//process RUN_MEMOTE{
+//    container ''
+//    publis
+//}
+
 /*
  * Workflow
  */
@@ -132,20 +137,20 @@ workflow {
     mags_ch = Channel.fromPath(params.genome)
     
     // Run gapseq on each genome
-    RUN_GAPSEQ(mags_ch)
+    //RUN_GAPSEQ(mags_ch)
     
     // Run CarveMe workflow: predict genes then build GEMs
     PREDICT_GENES(mags_ch)
     RUN_CARVEME(PREDICT_GENES.out.proteins)
     
     // Log completion
-    RUN_GAPSEQ.out.gapseq_results.flatten().view { result ->
-        log.info "Gapseq output: ${result}"
-    }
+    //RUN_GAPSEQ.out.gapseq_results.flatten().view { result ->
+    //    log.info "Gapseq output: ${result}"
+    //}
     
-    RUN_CARVEME.out.gem_models.view { model ->
-        log.info "CarveMe GEM model: ${model}"
-    }
+    //RUN_CARVEME.out.gem_models.view { model ->
+    //    log.info "CarveMe GEM model: ${model}"
+    //}
 }
 
 workflow.onComplete {
